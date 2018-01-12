@@ -1,14 +1,17 @@
 export default function highcharts(results) {
   return {
-    type: 'heatmap',
+    chart: {
+      type: 'heatmap',
+    },
     xAxis: {
-      categories: ['Alexander', 'Marie', 'Maximilian', 'Sophia', 'Lukas', 'Maria', 'Leon', 'Anna', 'Tim', 'Laura']
+      // categories: null,
+      title: 'Input/Output',
     },
-
     yAxis: {
-      categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      title: null
+      // categories: null,
+      title: 'Input Value'
     },
+    series: seriesFromArray(results)
   }
 }
 
@@ -17,45 +20,28 @@ function xAxisLabels(results) {
 }
 
 function seriesFromArray(results) {
+  /**
+   * results = [{ inputs: [], outputs: []}]
+   * @type {Array}
+   */
   const series = [];
   for (let i = 0; i < results.length; i++) {
+    let seriesIndex = 0;
     const { inputs, outputs } = results[i];
     for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
       for (let outputIndex = 0; outputIndex < outputs.length; outputIndex++) {
-        series.push([inputs[inputIndex], outputs[outputIndex]]);
+        series.push({
+          x: seriesIndex++,
+          y: inputs[inputIndex],
+          value: outputs[outputIndex],
+          name: `I${inputIndex} - O${outputIndex}`,
+        });
       }
     }
   }
-  return [{
-    type: 'heatmap',
-    data: [{
-      name: 'A',
-      value: 6,
-      colorValue: 1
-    }, {
-      name: 'B',
-      value: 6,
-      colorValue: 2
-    }, {
-      name: 'C',
-      value: 4,
-      colorValue: 3
-    }, {
-      name: 'D',
-      value: 3,
-      colorValue: 4
-    }, {
-      name: 'E',
-      value: 2,
-      colorValue: 5
-    }, {
-      name: 'F',
-      value: 2,
-      colorValue: 6
-    }, {
-      name: 'G',
-      value: 1,
-      colorValue: 7
-    }]
-  }];
+
+  return {
+    name: 'Neural Net CT Scan',
+    data: series,
+  };
 }

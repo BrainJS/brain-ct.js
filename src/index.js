@@ -1,10 +1,11 @@
-import { Translate } from './translate';
+import BrainCT from './brain-ct';
+import RandomInput from './random-input';
+import Translate from './translate';
+import ValuesInput from './values-input';
 
-export BrainCT from './brain-ct';
-export RandomInput from './random-input';
-export ValuesInput from './values-input';
-export Translate from './translate';
-
-export function translate() {
-  return new Translate();
-}
+export {
+  BrainCT,
+  RandomInput,
+  Translate,
+  ValuesInput,
+};

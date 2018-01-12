@@ -1,12 +1,17 @@
 import highcharts from './highcharts';
 
-export class Translate {
-  constructor(net = null) {
-    this.net = net;
+export default class Translate {
+  constructor() {
+    this.brainCt = null;
+    this.iterations = 10000;
+  }
+  static get from() {
+    const translate = new Translate();
+    return translate.from = translate.from.bind(translate);
   }
 
-  from(net) {
-    this.net = net;
+  from(brainCt) {
+    this.brainCt = brainCt;
     return this;
   }
 
@@ -15,6 +20,7 @@ export class Translate {
   }
 
   highchartsSync() {
-    return highcharts(this.net);
+    const results = this.brainCt.scanSync(this.iterations);
+    return highcharts(results);
   }
 }

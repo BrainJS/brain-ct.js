@@ -2,6 +2,8 @@
 # brain-ct.js
 CT scanner for your brain.js neural network
 
+By randomly sending inputs into a neural network, you can understand how it arrives at an output.
+
 ## planned usage
 ### instantiation
 Note: `net` is an instance of brain.js
@@ -44,3 +46,6 @@ import { translate } from 'brain-ct.js';
 Highcharts.chart('container', await translate.from(brainCt).to.highcharts());
 Highcharts.chart('container', translate.from(brainCt).to.highchartsSync());
 ```
+
+np
+`babel-node --presets=babel-preset-es2015 test.js`
