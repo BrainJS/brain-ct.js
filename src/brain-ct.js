@@ -1,7 +1,17 @@
+import RandomInput from './random-input';
+
 export default class BrainCT {
   constructor(net, inputGenerators) {
     this.net = net;
-    this.inputGenerators = inputGenerators;
+    this.inputGenerators = inputGenerators || this.randomInputGenerators();
+  }
+
+  randomInputGenerators() {
+    const inputGenerators = [];
+    for (let i = 0; i < this.net.sizes[0]; i++) {
+      inputGenerators.push(new RandomInput());
+    }
+    return inputGenerators;
   }
 
   scanSync(iterations) {
