@@ -14,4 +14,4 @@ const brainCt = new BrainCT(net, [
   new RandomInput()
 ]);
 
-require('fs').writeFileSync('xor-highcharts.json', JSON.stringify(Translate.from(brainCt).to.highchartsSync(), null, 2));
+require('fs').writeFileSync('xor-highcharts.json', 'const ctScan = ' + JSON.stringify(Translate.from(brainCt).to.highchartsSync(), null, 2));

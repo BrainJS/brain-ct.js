@@ -7,11 +7,8 @@ export default class BrainCT {
   scanSync(iterations) {
     const results = [];
     for (let i = 0; i < iterations; i++) {
-      const inputs = [];
-      for (const p in this.inputGenerators) {
-        inputs[p] = this.inputGenerators[p].value();
-      }
-      const outputs = this.net.run(inputs);
+      const inputs = this.inputGenerators.map(iG => iG.value());
+      const outputs = Array.prototype.slice.call(this.net.run(inputs));
       results.push({
         inputs,
         outputs
