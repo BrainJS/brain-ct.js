@@ -1,4 +1,8 @@
 export default function highcharts(results, options) {
+  return outputData(results, options).map(d => generateOptions(d, options))
+}
+
+function generateOptions(data, options){
   return {
     title: { text: 'Neural Net CT Scan' },
     boost: {
@@ -7,21 +11,21 @@ export default function highcharts(results, options) {
     },
     chart: {
       parallelCoordinates: true,
-      parallelAxes: {
+        parallelAxes: {
         lineWidth: 2,
-        min: 0,
-        max: 1,
-        tickAmount: 10,
+          min: 0,
+          max: 1,
+          tickAmount: 10,
       },
       width: 1000,
-      height: 750,
+        height: 750,
     },
     plotOptions: {
       series: {
         animation: false,
-        marker: {
+          marker: {
           enabled: false,
-          states: {
+            states: {
             hover: {
               enabled: false
             }
@@ -42,21 +46,22 @@ export default function highcharts(results, options) {
     },
     xAxis: {
       categories: [
-        ...results[0].inputs.map((input, i) => `Input ${i}`),
-        ...results[0].outputs.map((out, i) => `Output ${i}`)
+        ...(new Array(data[0].data.length - 1)).fill(0).map((input, i) => `Input ${i}`),
+        'Output'
       ],
-      offset: 10
+        offset: 10
     },
     legend: false,
-    series: seriesFromArray(results, options)
+    series: data
   }
 }
 
 function pickHex(value, options) {
-  var w = value * 2 - 1;
-  var w1 = (w+1) / 2;
-  var w2 = 1 - w1;
+  const w = value * 2 - 1;
+  const w1 = (w+1) / 2;
+  const w2 = 1 - w1;
   const colors = options.colors || {};
+  const alpha = colors.alpha || 0.05;
   const colorHigh = (colors.high || [0,0,255]).map(c => c*w1);
   const colorLow = (colors.low || [255,0,0]).map(c => c*w2);
 
@@ -64,27 +69,31 @@ function pickHex(value, options) {
     colorHigh[0] + colorLow[0],
     colorHigh[1] + colorLow[1],
     colorHigh[2] + colorLow[2]
-  ].map(c => Math.round(c)).join(',')+',0.05)';
+  ].map(c => Math.round(c)).join(',')+`,${alpha})`;
 }
 
-function seriesFromArray(results, options) {
+function coerceAllToNearest(array, options) {
+  options = options || {};
+  if (!options.toNearest) return array;
+  const multiplier = 1 / options.toNearest;
+  return array.map(c => Math.round(c * multiplier) / multiplier);
+}
+
+function outputData(results, options) {
   /**
    * results = [{ inputs: [], outputs: []}]
    * @type {Array}
    */
   options = options || {};
-  const coerceToValue = (array, options) => {
-    if (!options.toNearest) return array;
-    const multiplier = 1 / options.toNearest;
-    return array.map(c => Math.round(c * multiplier) / multiplier);
-  }
 
-  return [...results.map((result, iteration) => ({
-    name: `Iteration ${iteration}`,
-    data: coerceToValue([ ...result.inputs, ...result.outputs ], options),
-    color: pickHex(result.outputs[0], options),
-    shadow: false,
-    type: 'spline',
-    boostThreshold: 1,
-  }))];
+  return results[0].outputs.map((output, outputNumber) => {
+    return [...results.map((result, iteration) => ({
+        name: `Iteration ${iteration}`,
+        data: coerceAllToNearest([ ...result.inputs, result.outputs[outputNumber]], options),
+        color: pickHex(result.outputs[outputNumber], options),
+        shadow: false,
+        type: 'spline',
+        boostThreshold: 1,
+    }))];
+  });
 }
