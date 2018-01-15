@@ -19,8 +19,8 @@ export default class Translate {
     return this;
   }
 
-  highchartsSync() {
+  highchartsSync(options) {
     const results = this.brainCt.scanSync(this.iterations);
-    return highcharts(results);
+    return highcharts(results, options);
   }
 }

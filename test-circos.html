@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src='https://cdn.rawgit.com/nicgirault/circosJS/v2/dist/circos.js'></script>
+    <script src="xor-circos.json"></script>
+</head>
+
+<body>
+<svg id='chart'></svg>
+
+<script>
+  var myCircos = new Circos({
+    container: '#chart',
+    width: 900,
+    height: 900,
+  });
+  myCircos.layout(ctScan.data, ctScan.configuration);
+  myCircos.render();
+</script>
+</body>
+
+</html>
