@@ -3,7 +3,7 @@ import highcharts from './highcharts';
 export default class Translate {
   constructor() {
     this.brainCt = null;
-    this.iterations = 10000;
+    this.iterations = 1e5;
   }
   static get from() {
     const translate = new Translate();

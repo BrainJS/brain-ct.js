@@ -1,5 +1,5 @@
 export default function highcharts(results, options) {
-  return outputData(results, options).map(d => generateOptions(d, options))
+  return generateOptions(results, options)
 }
 
 function generateOptions(data, options){
@@ -10,66 +10,32 @@ function generateOptions(data, options){
       enabled: true,
     },
     chart: {
-      parallelCoordinates: true,
-        parallelAxes: {
-        lineWidth: 2,
-          min: 0,
-          max: 1,
-          tickAmount: 10,
-      },
       width: 1000,
-        height: 750,
+      height: 750,
+      type: 'scatter',
     },
     plotOptions: {
       series: {
         animation: false,
-          marker: {
-          enabled: false,
-            states: {
-            hover: {
-              enabled: false
-            }
-          }
-        },
-        states: {
-          hover: {
-            halo: {
-              size: 0
-            }
-          }
-        }
       }
     },
-    tooltip: {
-      pointFormat: '<span style="color:{point.color}">\u25CF</span>' +
-      '{series.name}: <b>{point.formattedValue}</b><br/>'
-    },
     xAxis: {
-      categories: [
-        ...(new Array(data[0].data.length - 1)).fill(0).map((input, i) => `Input ${i}`),
-        'Output'
-      ],
-        offset: 10
+      title: { text: 'Input Value' },
+      min: 0,
+      max: 1,
     },
-    legend: false,
-    series: data
+    yAxis: {
+      title: { text: 'Output Value' },
+      min: 0,
+      max: 1,
+    },
+    legend: {
+      layout: 'vertical',
+      align: 'left',
+      verticalAlign: 'top',
+    },
+    series: outputData(data)
   }
-}
-
-function pickHex(value, options) {
-  const w = value * 2 - 1;
-  const w1 = (w+1) / 2;
-  const w2 = 1 - w1;
-  const colors = options.colors || {};
-  const alpha = colors.alpha || 0.05;
-  const colorHigh = (colors.high || [0,0,255]).map(c => c*w1);
-  const colorLow = (colors.low || [255,0,0]).map(c => c*w2);
-
-  return 'rgba('+[
-    colorHigh[0] + colorLow[0],
-    colorHigh[1] + colorLow[1],
-    colorHigh[2] + colorLow[2]
-  ].map(c => Math.round(c)).join(',')+`,${alpha})`;
 }
 
 function coerceAllToNearest(array, options) {
@@ -85,15 +51,32 @@ function outputData(results, options) {
    * @type {Array}
    */
   options = options || {};
-
-  return results[0].outputs.map((output, outputNumber) => {
-    return [...results.map((result, iteration) => ({
-        name: `Iteration ${iteration}`,
-        data: coerceAllToNearest([ ...result.inputs, result.outputs[outputNumber]], options),
-        color: pickHex(result.outputs[outputNumber], options),
-        shadow: false,
-        type: 'spline',
-        boostThreshold: 1,
-    }))];
-  });
+  
+  return results.reduce((agg, result) => {
+    result.inputs.forEach((input, inputNumber) => {
+      result.outputs.forEach((output, outputNumber) => {
+        const aggIndex = inputNumber + (outputNumber * result.inputs.length);
+        agg[aggIndex] = agg[aggIndex] || {
+          id: `input${inputNumber}-output${outputNumber}`,
+          linkedTo: `output${outputNumber}`,
+          showInLegend: true, 
+          name: `Input ${inputNumber} - Output ${outputNumber}`,
+          data: [],
+          type: 'scatter',
+          boostThreshold: 1, 
+          marker: {
+              radius: 0.3
+          }
+        };
+        const x = input;
+        const y = output;
+        agg[aggIndex].data.push([x,y]);
+      })
+    })
+    return agg;
+  }, []).concat(...results[0].outputs.map((o, oIndex) => ({
+    id: `output${oIndex}`,
+    name: `All Output ${oIndex}`, 
+    showInLegend: true,
+  })));
 }

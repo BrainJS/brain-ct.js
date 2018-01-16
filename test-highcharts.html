@@ -1,14 +1,14 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/parallel-coordinates.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/modules/boost-canvas.js"></script>
 <script src="https://code.highcharts.com/modules/boost.js"></script>
+
 <script src="xor-highcharts.json"></script>
 
-<div id="container" style="height: 700px; min-width: 310px; max-width: 1000px; margin: 0 auto"></div>
+<div id="container" style="min-width: 310px; margin: 0 auto"></div>
 
 
 <script>
-  Highcharts.chart('container', ctScan[0] || {});
+  Highcharts.chart('container', ctScan || {});
 </script>
