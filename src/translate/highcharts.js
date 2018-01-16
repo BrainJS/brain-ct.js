@@ -20,19 +20,28 @@ function generateOptions(data, options){
       }
     },
     xAxis: {
-      title: { text: 'Input Value' },
+      title: { text: 'Output' },
       min: 0,
-      max: 1,
+      max: data[0].outputs.length,
+      tickInterval: 1,
+      gridLineWidth: 1,
     },
     yAxis: {
-      title: { text: 'Output Value' },
+      title: { text: 'Input' },
       min: 0,
-      max: 1,
+      max: data[0].inputs.length,
+      tickInterval: 1,
+      gridLineWidth: 1,
     },
     legend: {
       layout: 'vertical',
       align: 'left',
       verticalAlign: 'top',
+    },
+    tooltip: {
+      pointFormatter: function(){
+        return `<b>Output:</b> ${this.x % 1}<br /><b>Input:</b> ${this.y %1}`
+      }
     },
     series: outputData(data)
   }
@@ -52,15 +61,18 @@ function outputData(results, options) {
    */
   options = options || {};
   
-  return results.reduce((agg, result) => {
+  return results[0].outputs.map((o, oIndex) => ({
+    id: `output${oIndex}`,
+    name: `All Output ${oIndex}`, 
+    showInLegend: true,
+  })).concat(results.reduce((agg, result) => {
     result.inputs.forEach((input, inputNumber) => {
       result.outputs.forEach((output, outputNumber) => {
         const aggIndex = inputNumber + (outputNumber * result.inputs.length);
         agg[aggIndex] = agg[aggIndex] || {
-          id: `input${inputNumber}-output${outputNumber}`,
           linkedTo: `output${outputNumber}`,
           showInLegend: true, 
-          name: `Input ${inputNumber} - Output ${outputNumber}`,
+          name: `Output ${outputNumber} - Input ${inputNumber}`,
           data: [],
           type: 'scatter',
           boostThreshold: 1, 
@@ -68,15 +80,11 @@ function outputData(results, options) {
               radius: 0.3
           }
         };
-        const x = input;
-        const y = output;
+        const x = output + outputNumber;
+        const y = input + inputNumber;
         agg[aggIndex].data.push([x,y]);
       })
     })
     return agg;
-  }, []).concat(...results[0].outputs.map((o, oIndex) => ({
-    id: `output${oIndex}`,
-    name: `All Output ${oIndex}`, 
-    showInLegend: true,
-  })));
+  }, []));
 }

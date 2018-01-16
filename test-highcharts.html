@@ -10,5 +10,10 @@
 
 
 <script>
+  // This is needed when we do a JSON.stringify of the chart object, otherwise this will exist
+  ctScan.tooltip = ctScan.tooltip || {};
+  ctScan.tooltip.pointFormatter = function(){
+    return `<b>Output:</b> ${this.x % 1}<br /><b>Input:</b> ${this.y %1}`
+  }
   Highcharts.chart('container', ctScan || {});
 </script>
