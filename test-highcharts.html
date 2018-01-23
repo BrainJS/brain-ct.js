@@ -1,19 +1,37 @@
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
-<script src="https://code.highcharts.com/modules/boost-canvas.js"></script>
-<script src="https://code.highcharts.com/modules/boost.js"></script>
+<html>
+    <head>
 
-<script src="xor-highcharts.json"></script>
+        <!-- For Highcharts translator -->
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <!-- For Explorer -->
+        <script src="https://rawgithub.com/highcharts/draggable-points/master/draggable-points.js"></script>
 
-<div id="container" style="min-width: 310px; margin: 0 auto"></div>
+        <!-- For Scanner -->
+        <script src="https://code.highcharts.com/modules/boost-canvas.js"></script>
+        <script src="https://code.highcharts.com/modules/boost.js"></script>
+
+        <!-- BrainJS and BrainCT -->
+        <script src="https://cdn.rawgit.com/BrainJS/brain.js/7e5ced2e/browser.js"></script>
+        <script src="./browser.js"></script>
+    </head>
+    <body>
+        <div id="container-explorer" style="height: 400px"></div>
+        <div id="container-scanner" style="height: 400px"></div>
+        <script>
+          const net = new brain.NeuralNetwork();
+          net.train([
+            {input: [0, 0], output: [0, 1, 0, 1]},
+            {input: [0, 1], output: [1, 0, 1, 0]},
+            {input: [1, 0], output: [1, 0, 1, 0]},
+            {input: [1, 1], output: [0, 1, 1, 0]},
+          ], {log: false});
+
+          const newCT = new brainCT.BrainCT(net);
+          Highcharts.chart('container-explorer', brainCT.Translate.from(newCT).to.highcharts.explorer());
+          Highcharts.chart('container-scanner', brainCT.Translate.from(newCT).to.highcharts.scannerSync());
+
+        </script>
+    </body>
+</html>
 
 
-<script>
-  // This is needed when we do a JSON.stringify of the chart object, otherwise this will exist
-  ctScan.tooltip = ctScan.tooltip || {};
-  ctScan.tooltip.pointFormatter = function(){
-    return `<b>Output:</b> ${this.x % 1}<br /><b>Input:</b> ${this.y %1}`
-  }
-  Highcharts.chart('container', ctScan || {});
-</script>

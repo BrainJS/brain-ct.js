@@ -1,4 +1,13 @@
-export default function highcharts(results, options) {
+function informAboutDependencies(){
+  console.log(`For Brain-CT Scanner, ensure you are including Highcharts and, for better performance, the boost module, e.g. 
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/boost-canvas.js"></script>
+    <script src="https://code.highcharts.com/modules/boost.js"></script>
+You can find more information Highcharts and this module at https://www.highcharts.com/`);
+}
+
+export default function (results, options) {
+  informAboutDependencies();
   return generateOptions(results, options)
 }
 
@@ -60,10 +69,10 @@ function outputData(results, options) {
    * @type {Array}
    */
   options = options || {};
-  
+
   return results[0].outputs.map((o, oIndex) => ({
     id: `output${oIndex}`,
-    name: `All Output ${oIndex}`, 
+    name: `All Output ${oIndex}`,
     showInLegend: true,
   })).concat(results.reduce((agg, result) => {
     result.inputs.forEach((input, inputNumber) => {
@@ -71,20 +80,20 @@ function outputData(results, options) {
         const aggIndex = inputNumber + (outputNumber * result.inputs.length);
         agg[aggIndex] = agg[aggIndex] || {
           linkedTo: `output${outputNumber}`,
-          showInLegend: true, 
+          showInLegend: true,
           name: `Output ${outputNumber} - Input ${inputNumber}`,
           data: [],
           type: 'scatter',
-          boostThreshold: 1, 
+          boostThreshold: 1,
           marker: {
-              radius: 0.3
+            radius: 0.3
           }
         };
         const x = output + outputNumber;
         const y = input + inputNumber;
         agg[aggIndex].data.push([x,y]);
       })
-    })
+    });
     return agg;
   }, []));
 }
