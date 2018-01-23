@@ -1,9 +1,8 @@
-import highcharts from './highcharts';
+import highcharts from './highcharts/';
 
 export default class Translate {
   constructor() {
     this.brainCt = null;
-    this.iterations = 1e5;
   }
   static get from() {
     const translate = new Translate();
@@ -19,8 +18,7 @@ export default class Translate {
     return this;
   }
 
-  highchartsSync(options) {
-    const results = this.brainCt.scanSync(this.iterations);
-    return highcharts(results, options);
+  get highcharts() {
+    return new highcharts(this.brainCt);
   }
 }
