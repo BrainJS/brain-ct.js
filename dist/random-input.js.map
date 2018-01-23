@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/random-input.js"],"names":["RandomInput","Math","random"],"mappings":";;;;;;;;;;IAAqBA,W;;;;;;;4BACX;AACN,aAAOC,KAAKC,MAAL,EAAP;AACD;;;;;;kBAHkBF,W","file":"random-input.js","sourcesContent":["export default class RandomInput {\n  value() {\n    return Math.random();\n  }\n}"]}
