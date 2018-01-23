@@ -79,7 +79,7 @@ function generateOptions(trainedNet, options) {
       xAxis: 0
     }, {
       data: [].concat(_toConsumableArray(data.output)),
-      type: options.outputType === 'point' ? 'point' : 'line',
+      type: options.outputType === 'scatter' ? 'scatter' : 'line',
       name: 'Outputs',
       draggableY: false,
       xAxis: 1

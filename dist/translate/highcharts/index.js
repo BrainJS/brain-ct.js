@@ -45,7 +45,7 @@ var highcharts = function () {
     get: function get() {
       return {
         explorer: {
-          outputType: 'line'
+          outputType: 'scatter'
         },
         scanner: {
           iterations: 1e5

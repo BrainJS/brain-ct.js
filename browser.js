@@ -205,7 +205,7 @@ function generateOptions(trainedNet, options) {
       xAxis: 0
     }, {
       data: [].concat(_toConsumableArray(data.output)),
-      type: options.outputType === 'point' ? 'point' : 'line',
+      type: options.outputType === 'scatter' ? 'scatter' : 'line',
       name: 'Outputs',
       draggableY: false,
       xAxis: 1
@@ -261,7 +261,7 @@ var highcharts = function () {
     get: function get() {
       return {
         explorer: {
-          outputType: 'line'
+          outputType: 'scatter'
         },
         scanner: {
           iterations: 1e5

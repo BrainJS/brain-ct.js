@@ -8,7 +8,7 @@ export default class highcharts {
   static get defaultOptions() {
     return {
       explorer: {
-        outputType: 'line',
+        outputType: 'scatter',
       },
       scanner: {
         iterations: 1e5,
